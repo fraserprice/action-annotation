@@ -21,6 +21,7 @@ var underscore = require('underscore');
 
 	function AppController($scope, $interval, logger, dialog, path) {
 		var app = this;
+		app.videoIdx = 0;
 		app.labels = [];
 		app.labelText = '';
 		app.data = {};
@@ -49,6 +50,7 @@ var underscore = require('underscore');
 			jQuery("#classifyText").focus();
 		});
 
+
 		Mousetrap.bindGlobal(['ctrl+n', 'command+n'], function() {
 			app.newVideos();
 		});
@@ -57,19 +59,48 @@ var underscore = require('underscore');
 			jQuery("#labelText").focus();
 		});
 
-		Mousetrap.bindGlobal(['ctrl+left', 'command+left'], function() {
+		Mousetrap.bindGlobal(['ctrl+left', 'command+left', 'left'], function() {
 			if ($scope.player) {
-				$scope.player.currentTime(app.currentTime - 1);
+				$scope.player.currentTime(app.currentTime - 0.05);
+                app.currentTime -= 0.05;
 			}
 		});
 
-		Mousetrap.bindGlobal(['ctrl+right', 'command+right'], function() {
+		Mousetrap.bindGlobal(['ctrl+right', 'command+right', 'right'], function() {
 			if ($scope.player) {
-				$scope.player.currentTime(app.currentTime + 1);
+				$scope.player.currentTime(app.currentTime + 0.05);
+				app.currentTime += 0.05;
 			}
 		});
 
-		Mousetrap.bindGlobal(['ctrl+p', 'command+p'], function() {
+        Mousetrap.bindGlobal(['ctrl+down', 'command+down', 'down'], function() {
+            if ($scope.player) {
+                $scope.player.currentTime(2.5);
+                app.currentTime = 2.5;
+            }
+        });
+
+        Mousetrap.bindGlobal(['up', 'ctrl+up', 'command+up'], function() {
+            if ($scope.player) {
+                app.labelVideo();
+            }
+        });
+
+        Mousetrap.bindGlobal(['n'], function() {
+            if(app.videoIdx < app.videos.length - 1) {
+            	app.toggleComplete();
+            	app.selectVideo(app.videoIdx + 1);
+			}
+        });
+
+        Mousetrap.bindGlobal(['b'], function() {
+            if(app.videoIdx > 0) {
+                app.selectVideo(app.videoIdx - 1);
+                app.toggleComplete();
+            }
+        });
+
+		Mousetrap.bindGlobal(['ctrl+p', 'command+p', 'space'], function() {
 			if ($scope.player) {
 				console.log($scope.player.paused());
 				if ($scope.player.paused()) {
@@ -100,7 +131,7 @@ var underscore = require('underscore');
 
 		app.generateDataset = function() {
 
-		}
+		};
 
 		app.newProject = function() {
 			var path = dialog.showSaveDialog({
@@ -108,7 +139,7 @@ var underscore = require('underscore');
 				filters: app.AUCVLfilters
 			});
 			app.filename = path;
-		}
+		};
 
 		app.existingProject = function() {
 			var result = dialog.showOpenDialog({
@@ -119,7 +150,7 @@ var underscore = require('underscore');
 				app.filename = result[0];
 				app.loadProject();
 			}
-		}
+		};
 
 		app.loadProject = function() {
 			try {
@@ -129,17 +160,23 @@ var underscore = require('underscore');
 				app.labels = data['labels'];
 				app.data = data['data'];
 				app.videos = data['videos'];
+				app.videoIdx = data['video_id'];
+                if(app.labels.length > 0) {
+                    app.classifyText = app.labels[0];
+                }
+				app.selectVideo(app.videoIdx);
 			} catch (e) {
 				app.filename = undefined;
 				throw e;
 			}
-		}
+		};
 
 		app.saveProject = function() {
 			fs.writeFile(app.filename, JSON.stringify({
 				'labels': app.labels,
 				'data': app.data,
-				'videos': app.videos
+				'videos': app.videos,
+				'video_id': app.videoIdx
 			}), function(err) {
 			    if(err) {
 			        return console.log(err);
@@ -147,29 +184,30 @@ var underscore = require('underscore');
 
 			    console.log("The file was saved!");
 			});
-		}
+		};
 
 		app.newLabel = function() {
 			if (app.labels.indexOf(app.labelText) < 0) {
 				app.labels.push(app.labelText);
 			}
 
+            app.classifyText = app.labelText;
 			app.labelText = '';
-		}
+		};
 
 		app.removeLabel = function(labelIdx) {
 			app.labels.splice(labelIdx, 1);
-		}
+		};
 
 		app.toggleComplete = function() {
 			app.currentVideo.complete = !app.currentVideo.complete;
-		}
+		};
 
 		app.deleteVideo = function() {
 			var vidIdx = app.videos.indexOf(app.currentVideo);
 			app.videos.splice(vidIdx, 1);
 			app.currentVideo = undefined;
-		}
+		};
 
 		app.newVideos = function() {
 			var videos = dialog.showOpenDialog({
@@ -190,7 +228,7 @@ var underscore = require('underscore');
 			}
 
 			console.log(app.videos);
-		}
+		};
 
 		app.setVideo = function() {
 			// var video = ;
@@ -214,12 +252,17 @@ var underscore = require('underscore');
 			if (!(app.currentVideo.name in app.data)) {
 				app.data[app.currentVideo.name] = [];
 			}
-		}
+		};
 
 		app.selectVideo = function(idx) {
 			app.currentVideo = app.videos[idx];
+            app.videoIdx = idx;
 			app.setVideo();
-		}
+		};
+
+		app.autoLabelVideo = function() {
+            if(app.currentVideo == undefined) return;
+		};
 
 		app.labelVideo = function() {
 			if(app.currentVideo == undefined) return;
@@ -239,9 +282,9 @@ var underscore = require('underscore');
 			});
 
 			jQuery("#classifyText").blur();
-			app.classifyText = '';
-			$scope.player.play();
-		}
+			//app.classifyText = '';
+			//$scope.player.play();
+		};
 
 		app.removeVideoLabel = function(idx) {
 			app.data[app.currentVideo.name].splice(idx, 1);
