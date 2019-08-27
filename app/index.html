@@ -82,7 +82,7 @@
 						<a href="#" ng-click="app.deleteVideo()" class="btn btn-md btn-default btn-danger">Delete</span></a>
 						<a href="#" ng-click="app.toggleComplete()" class="btn btn-md btn-default">Mark <span ng-bind="app.currentVideo.complete ? 'Incomplete' : 'Complete'"></span></a>
 					</div>
-					<h3>Video: {{app.currentVideo.name}}</h3>
+					<h3>Video: {{app.videoIdx + "/" + app.videos.length + ": " + app.currentVideo.name}}</h3>
 					<vjs-video-container vjs-ratio="640:380" vjs-media="mediaToggle">
 						<video class="video-js vjs-default-skin" controls preload="auto" width="100%">
 						</video>

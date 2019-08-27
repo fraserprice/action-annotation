@@ -1,5 +1,7 @@
 *package-lock.json
+data
 .idea
+.DS_Store
 
 
 #directories
