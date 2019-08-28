@@ -118,4 +118,7 @@ app.on('ready', function() {
     //     });
     // }
 
+    if (mainWindow) {
+        mainWindow.webContents.send('update-message', 'update-not-available');
+    }
 });
