@@ -155,16 +155,16 @@ var underscore = require('underscore');
 
 		app.newProject = function() {
 			var path = dialog.showSaveDialog({
-				// 'defaultPath': 'Project.aucvl',
-				// filters: app.AUCVLfilters
+				'defaultPath': 'Project.aucvl',
+				filters: app.AUCVLfilters
 			});
 			app.filename = path;
 		};
 
 		app.existingProject = function() {
 			var result = dialog.showOpenDialog({
-				// 'defaultPath': 'Project.aucvl',
-				// filters: app.AUCVLfilters
+				'defaultPath': 'Project.aucvl',
+				filters: app.AUCVLfilters
 			});
 			if (result) {
 				app.filename = result[0];
