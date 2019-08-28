@@ -59,6 +59,20 @@ var underscore = require('underscore');
 			jQuery("#labelText").focus();
 		});
 
+        Mousetrap.bindGlobal(['a'], function() {
+            if ($scope.player) {
+                $scope.player.currentTime(app.currentTime - 0.1);
+                app.currentTime -= 0.1;
+            }
+        });
+
+        Mousetrap.bindGlobal(['d'], function() {
+            if ($scope.player) {
+                $scope.player.currentTime(app.currentTime + 0.1);
+                app.currentTime += 0.1;
+            }
+        });
+
 		Mousetrap.bindGlobal(['ctrl+left', 'command+left', 'left'], function() {
 			if ($scope.player) {
 				$scope.player.currentTime(app.currentTime - 0.05);
@@ -73,14 +87,14 @@ var underscore = require('underscore');
 			}
 		});
 
-        Mousetrap.bindGlobal(['ctrl+down', 'command+down', 'down'], function() {
+        Mousetrap.bindGlobal(['ctrl+down', 'command+down', 'down', 's'], function() {
             if ($scope.player) {
                 $scope.player.currentTime(app.currentTime + 0.2);
                 app.currentTime += 0.2;
             }
         });
 
-        Mousetrap.bindGlobal(['up', 'ctrl+up', 'command+up'], function() {
+        Mousetrap.bindGlobal(['up', 'ctrl+up', 'command+up', 'w'], function() {
             if ($scope.player) {
                 app.labelVideo();
             }
