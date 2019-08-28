@@ -110,12 +110,12 @@ app.on('ready', function() {
     mainWindow.on('closed', function() {
         mainWindow = null;
     });
-
-    if (!isDevelopment) {
-        mainWindow.webContents.on('did-frame-finish-load', function() {
-            logger.debug("Checking for updates: " + feedURL);
-            autoUpdater.checkForUpdates();
-        });
-    }
+    //
+    // if (!isDevelopment) {
+    //     mainWindow.webContents.on('did-frame-finish-load', function() {
+    //         logger.debug("Checking for updates: " + feedURL);
+    //         autoUpdater.checkForUpdates();
+    //     });
+    // }
 
 });
