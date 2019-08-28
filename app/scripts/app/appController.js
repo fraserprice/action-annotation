@@ -61,6 +61,9 @@ var underscore = require('underscore');
 
         Mousetrap.bindGlobal(['a'], function() {
             if ($scope.player) {
+                if (!$scope.player.paused()) {
+                    $scope.player.pause();
+                }
                 $scope.player.currentTime(app.currentTime - 0.1);
                 app.currentTime -= 0.1;
             }
@@ -75,6 +78,9 @@ var underscore = require('underscore');
 
 		Mousetrap.bindGlobal(['ctrl+left', 'command+left', 'left'], function() {
 			if ($scope.player) {
+                if (!$scope.player.paused()) {
+                    $scope.player.pause();
+                }
 				$scope.player.currentTime(app.currentTime - 0.05);
                 app.currentTime -= 0.05;
 			}
