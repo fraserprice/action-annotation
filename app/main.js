@@ -21,11 +21,14 @@ var feedURL = "";
 
 // Don't use auto-updater if we are in development
 if (process.env.NODE_ENV != undefined && !isDevelopment) {
+    console.log(os.platform());
     if (os.platform() === 'darwin') {
         updateFeed = 'http://ea-todo.herokuapp.com/updates/latest';
     }
     else if (os.platform() === 'win32') {
         updateFeed = 'http://eatodo.s3.amazonaws.com/updates/latest/win' + (os.arch() === 'x64' ? '64' : '32');
+    } else {
+        updateFeed = ''
     }
 
     autoUpdater.addListener("update-available", function(event) {
